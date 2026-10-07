@@ -100,8 +100,10 @@ The API exposes a single canonical model independent of upstream formats:
 2. **No pass-through** — CORE strips `password`, `ssn`, `bank.cardNumber`, `crypto.wallet`.
 3. **Resilience** — per-provider timeout (2s), exponential backoff retry only on `5xx`/`timeout`/`network`, never on `4xx`.
 4. **Graceful degradation** — upstream failures result in HTTP 200 with `partial: true` and `warnings[]`.
-5. **Frontend cache** — TanStack Query handles browser-side cache and 30s auto-refresh, keeping backend simple.
-6. **OOP + Repository** — domain models and repository interfaces for future persistence.
+5. **Backend FX cache** — in-memory TTL cache for EUR/GBP rates to avoid hitting Frankfurter on every dashboard request.
+6. **Frontend cache** — TanStack Query handles browser-side cache and 30s auto-refresh.
+7. **Structured provider logs** — every upstream call logs provider alias, attempt, latency, and outcome as JSON.
+8. **OOP + Repository** — domain models and repository interfaces for future persistence.
 
 ## Upstream providers
 
@@ -118,8 +120,28 @@ The API exposes a single canonical model independent of upstream formats:
 pnpm dev       # run api + web in parallel
 pnpm build     # build all packages and apps
 pnpm typecheck # build shared types then typecheck all workspaces
-pnpm test      # run tests (placeholders currently)
+pnpm test      # build shared types then run tests
 pnpm lint      # run linters (placeholders currently)
+```
+
+## Architecture sketch
+
+```
+┌─────────────┐     ┌──────────────────────┐     ┌──────────────────┐
+│  React/Vite │────▶│  Fastify API         │────▶│  Provider        │
+│  Panel      │     │  /api/v1/dashboard   │     │  Orchestrator    │
+└─────────────┘     └──────────────────────┘     └──────────────────┘
+                             │                           │
+                             ▼                           ▼
+                    ┌────────────────┐         ┌────────┬────────┬────────┬────────┐
+                    │  Repository    │         │  CORE  │  PAGOS │   FX   │ INESTABLE
+                    │  (in-memory)   │         │dummyjson dummyjson frankfurter httpbin
+                    └────────────────┘         └────────┴────────┴────────┴────────┘
+                                                          │
+                                                   ┌──────┴──────┐
+                                                   │  FX TTL     │
+                                                   │  cache      │
+                                                   └─────────────┘
 ```
 
 ## Limitations / what is not done

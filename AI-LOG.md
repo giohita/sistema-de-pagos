@@ -10,6 +10,7 @@
 - **Backend**: Node.js + TypeScript + Fastify.
   - Fastify gives built-in async/await, JSON schema validation, pino logging, and excellent timeout handling without extra middleware.
   - TypeScript keeps the canonical contract type-safe across the monorepo.
+  - Added an in-memory TTL FX cache and structured JSON logs per provider.
 - **Frontend**: React + Vite + TypeScript + TanStack Query.
   - Vite is fast to start and ideal for a single-screen demo.
   - TanStack Query provides browser-side cache, stale-while-revalidate, and auto-refresh without backend complexity.

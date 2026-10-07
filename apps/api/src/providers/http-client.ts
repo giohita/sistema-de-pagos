@@ -5,7 +5,7 @@ import {
   type ProviderErrorKind,
 } from "@paylinkhub/types";
 import { env } from "../config/env.js";
-
+import { logProvider } from "../utils/logger.js";
 
 function classifyError(error: unknown): ProviderErrorKind {
   if (axios.isAxiosError(error)) {
@@ -44,6 +44,7 @@ export class HttpClient {
 
   async request<T>(config: RequestConfig): Promise<T> {
     const { url, method = "get", params } = config;
+    const startedAt = Date.now();
     let lastError: unknown;
 
     for (let attempt = 1; attempt <= env.resilience.maxAttempts; attempt++) {
@@ -53,10 +54,24 @@ export class HttpClient {
           url,
           params,
         });
+        logProvider({
+          provider: this.alias,
+          attempt,
+          latencyMs: Date.now() - startedAt,
+          outcome: "success",
+          url,
+        });
         return response.data;
       } catch (error) {
         lastError = error;
         const kind = classifyError(error);
+        logProvider({
+          provider: this.alias,
+          attempt,
+          outcome: "error",
+          errorKind: kind,
+          url,
+        });
         const isRetryable = kind === "timeout" || kind === "network" || kind === "http_5xx";
         if (!isRetryable || attempt === env.resilience.maxAttempts) {
           break;

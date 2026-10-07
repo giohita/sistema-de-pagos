@@ -16,6 +16,9 @@ export const env = {
     maxAttempts: Number(process.env.RETRY_MAX_ATTEMPTS || 3),
     backoffMs: Number(process.env.RETRY_BACKOFF_MS || 500),
   },
+  cache: {
+    fxTtlMs: Number(process.env.FX_CACHE_TTL_MS || 60000),
+  },
   persistence: {
     mode: process.env.PERSISTENCE_MODE || "memory",
     mongodbUri: process.env.MONGODB_URI,
