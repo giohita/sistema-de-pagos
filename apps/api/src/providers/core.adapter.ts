@@ -20,6 +20,20 @@ interface DummyJsonUser {
   crypto?: { wallet?: string };
 }
 
+export function mapCustomer(raw: DummyJsonUser): Customer {
+  return {
+    id: raw.id,
+    fullName: `${raw.firstName} ${raw.lastName}`,
+    email: raw.email,
+    phone: raw.phone,
+    address: {
+      street: raw.address.address,
+      city: raw.address.city,
+      country: raw.address.country,
+    },
+  };
+}
+
 export class CoreProviderAdapter implements IProviderAdapter<number, Customer> {
   readonly alias: ProviderAlias = "core";
   private http = new HttpClient(this.alias);
@@ -31,17 +45,7 @@ export class CoreProviderAdapter implements IProviderAdapter<number, Customer> {
         url: `${env.upstreams.coreBaseUrl}/users/${customerId}`,
       });
 
-      const customer: Customer = {
-        id: raw.id,
-        fullName: `${raw.firstName} ${raw.lastName}`,
-        email: raw.email,
-        phone: raw.phone,
-        address: {
-          street: raw.address.address,
-          city: raw.address.city,
-          country: raw.address.country,
-        },
-      };
+      const customer = mapCustomer(raw);
 
       return { ok: true, data: customer, latencyMs: Date.now() - startedAt };
     } catch (error) {

@@ -21,6 +21,19 @@ interface DummyJsonCartsResponse {
   limit: number;
 }
 
+export function mapTransactions(carts: DummyJsonCart[]): Transaction[] {
+  return carts.flatMap((cart) =>
+    cart.products.map((product) => ({
+      id: product.id,
+      title: product.title,
+      quantity: product.quantity,
+      totalUsd: product.total,
+      totalEur: 0,
+      totalGbp: 0,
+    })),
+  );
+}
+
 export class PagosProviderAdapter
   implements IProviderAdapter<number, Transaction[]>
 {
@@ -34,16 +47,7 @@ export class PagosProviderAdapter
         url: `${env.upstreams.pagosBaseUrl}/carts/user/${customerId}`,
       });
 
-      const transactions: Transaction[] = response.carts.flatMap((cart) =>
-        cart.products.map((product) => ({
-          id: product.id,
-          title: product.title,
-          quantity: product.quantity,
-          totalUsd: product.total,
-          totalEur: 0,
-          totalGbp: 0,
-        })),
-      );
+      const transactions = mapTransactions(response.carts);
 
       return { ok: true, data: transactions, latencyMs: Date.now() - startedAt };
     } catch (error) {

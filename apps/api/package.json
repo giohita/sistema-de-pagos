@@ -10,7 +10,7 @@
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "lint": "echo 'eslint not configured yet'",
-    "test": "echo 'no tests yet'",
+    "test": "tsx test-runner.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {
