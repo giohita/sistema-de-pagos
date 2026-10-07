@@ -1,0 +1,47 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-package:
+    name: Build production artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all workspaces
+        run: npm run build
+
+      - name: Upload API artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: paylinkhub-api
+          path: apps/api/dist
+
+      - name: Upload web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: paylinkhub-web
+          path: apps/web/dist
+
+  # NOTE: Deployment to a live environment is intentionally disabled for this
+  # assessment repository. The CD workflow packages artifacts only. To enable
+  # real deployment, add a provider-specific step (e.g. Fly.io, Railway,
+  # Render, Vercel) and store secrets in GitHub Actions.
