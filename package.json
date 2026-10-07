@@ -13,7 +13,7 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "pnpm --filter @paylinkhub/types build && pnpm -r typecheck",
     "clean": "pnpm -r clean"
   },
   "devDependencies": {
