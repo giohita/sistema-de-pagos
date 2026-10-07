@@ -19,6 +19,10 @@ export const env = {
   cache: {
     fxTtlMs: Number(process.env.FX_CACHE_TTL_MS || 60000),
   },
+  circuitBreaker: {
+    failureThreshold: Number(process.env.CIRCUIT_BREAKER_FAILURE_THRESHOLD || 3),
+    recoveryTimeoutMs: Number(process.env.CIRCUIT_BREAKER_RECOVERY_MS || 10000),
+  },
   persistence: {
     mode: process.env.PERSISTENCE_MODE || "memory",
     mongodbUri: process.env.MONGODB_URI,

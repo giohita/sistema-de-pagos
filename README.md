@@ -148,7 +148,7 @@ pnpm lint      # run linters (placeholders currently)
 
 - ESLint and Vitest are not fully configured; scripts are placeholders.
 - No persistent database in this demo; repository interfaces are ready for MongoDB/in-memory swap.
-- Circuit breaker for INESTABLE is not implemented.
+- Circuit breaker is implemented for INESTABLE but could be generalized to all providers.
 - Authentication is not required by the assessment.
 - The panel is intentionally simple; no pixel-perfect design system.
 

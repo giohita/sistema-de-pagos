@@ -1,5 +1,6 @@
 import type { ProviderAlias, ProviderHealth } from "@paylinkhub/types";
 import { env } from "../config/env.js";
+import { CircuitBreaker } from "./circuit-breaker.js";
 import { HttpClient } from "./http-client.js";
 import type { IProviderAdapter, ProviderResult } from "./provider.interface.js";
 
@@ -8,13 +9,16 @@ export class InestableProviderAdapter
 {
   readonly alias: ProviderAlias = "inestable";
   private http = new HttpClient(this.alias);
+  private breaker = new CircuitBreaker(this.alias, env.circuitBreaker);
 
   async fetch(): Promise<ProviderResult<{ status: number }>> {
     const startedAt = Date.now();
     try {
-      const status = await this.http.request({
-        url: `${env.upstreams.inestableBaseUrl}/status/500`,
-      });
+      const status = await this.breaker.call(() =>
+        this.http.request({
+          url: `${env.upstreams.inestableBaseUrl}/status/500`,
+        }),
+      );
       return {
         ok: true,
         data: { status: status as unknown as number },

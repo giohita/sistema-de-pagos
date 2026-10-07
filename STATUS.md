@@ -14,7 +14,7 @@ Honest status of each requirement from the Credicorp Bank assessment.
 | Búsqueda/filtro | Hecho | Filtro por título sobre la tabla de transacciones. |
 | Logs estructurados | Hecho | Fastify/pino por request + logs JSON por proveedor en `logProvider`. |
 | Propuesta de innovación | Hecho | Detección de anomalías en transacciones agregadas, documentada en README y AI-LOG. |
-| Circuit breaker | No hecho | Fuera de tiempo. Se agregaría con `opossum` o un state machine simple. |
+| Circuit breaker | Hecho | `CircuitBreaker` state machine aplicado al proveedor INESTABLE; tests incluidos. |
 | Boceto innovación | Hecho | Diagrama ASCII de arquitectura agregado a README. |
 | Auto-refresh panel | Hecho | TanStack Query `refetchInterval: 30000`. |
 | Patrón repositorio | Hecho | `ICustomerRepository` + implementación en memoria con índice único sobre email. |
@@ -24,6 +24,6 @@ Honest status of each requirement from the Credicorp Bank assessment.
 
 - **P0 completos**: esqueleto, contrato canónico, orquestación, resiliencia, degradación, panel, caché FX, logs estructurados.
 - **P1 completos**: propuesta escrita + boceto ASCII.
-- **P2 no hechos**: circuit breaker. Test de mapeo y patrón repositorio ya están hechos.
+- **P2 completos**: circuit breaker, test de mapeo, patrón repositorio.
 
 La prioridad fue entregar un flujo vertical completo y honesto sobre intentar cubrir todo superficialmente.
