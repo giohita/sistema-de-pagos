@@ -1,7 +1,12 @@
+import { useState } from "react";
 import { DashboardContainer } from "./containers/DashboardContainer.js";
 import { colors } from "./styles/colors.js";
 
+const CUSTOMER_IDS = [1, 2, 3, 4, 5];
+
 export function App() {
+  const [customerId, setCustomerId] = useState(1);
+
   return (
     <div
       style={{
@@ -30,7 +35,41 @@ export function App() {
       </header>
 
       <main style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>
-        <DashboardContainer customerId={1} />
+        <div style={{ marginBottom: 24 }}>
+          <label
+            htmlFor="customer-select"
+            style={{
+              display: "block",
+              marginBottom: 8,
+              fontWeight: 600,
+              color: colors.brand.navy,
+            }}
+          >
+            Select customer
+          </label>
+          <select
+            id="customer-select"
+            value={customerId}
+            onChange={(e) => setCustomerId(Number(e.target.value))}
+            style={{
+              padding: "10px 14px",
+              borderRadius: 8,
+              border: `1px solid ${colors.surface.border}`,
+              fontSize: 14,
+              minWidth: 220,
+              background: "white",
+              cursor: "pointer",
+            }}
+          >
+            {CUSTOMER_IDS.map((id) => (
+              <option key={id} value={id}>
+                Customer {id}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <DashboardContainer customerId={customerId} />
       </main>
     </div>
   );
