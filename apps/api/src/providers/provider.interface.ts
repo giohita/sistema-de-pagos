@@ -1,15 +1,11 @@
 import type {
   ProviderAlias,
-  ProviderError,
   ProviderHealth,
 } from "@paylinkhub/types";
 
-export interface ProviderResult<T> {
-  ok: boolean;
-  data?: T;
-  error?: ProviderError;
-  latencyMs: number;
-}
+import type { ProviderResult as SharedProviderResult } from "@paylinkhub/types";
+
+export type ProviderResult<T> = SharedProviderResult<T>;
 
 export interface IProviderAdapter<TRequest, TResult> {
   readonly alias: ProviderAlias;

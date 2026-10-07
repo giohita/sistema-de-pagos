@@ -66,7 +66,11 @@ export class ProviderOrchestrator {
       const typed = result as ProviderResult<unknown>;
 
       if (typed.ok) {
-        providerHealth[alias] = { healthy: true, latencyMs: typed.latencyMs };
+        providerHealth[alias] = {
+          healthy: true,
+          latencyMs: typed.latencyMs,
+          cached: typed.cached,
+        };
         if (alias === "core") customer = typed.data as Customer;
         if (alias === "pagos") transactions = typed.data as Transaction[];
         if (alias === "fx") fx = typed.data as FxSnapshot;

@@ -35,6 +35,7 @@ export interface ProviderHealth {
   healthy: boolean;
   latencyMs?: number;
   error?: string;
+  cached?: boolean;
 }
 
 export type ProviderAlias = "core" | "pagos" | "fx" | "inestable";
@@ -54,6 +55,7 @@ export interface ProviderResult<T> {
   data?: T;
   error?: ProviderError;
   latencyMs: number;
+  cached?: boolean;
 }
 
 export type ProviderErrorKind =
