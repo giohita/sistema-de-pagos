@@ -45,6 +45,22 @@ pnpm dev
 - API: http://localhost:3001
 - Panel: http://localhost:5173
 
+### With MongoDB persistence (optional)
+
+```bash
+# 1. Start MongoDB with Docker
+docker compose up -d
+
+# 2. Switch API to MongoDB mode in apps/api/.env
+PERSISTENCE_MODE=mongodb
+MONGODB_URI=mongodb://localhost:27017/paylinkhub
+
+# 3. Run the apps
+pnpm dev
+```
+
+The dashboard still works with `PERSISTENCE_MODE=memory` (default) for reviewers who don't have Docker.
+
 ## Example curl
 
 ```bash
@@ -103,7 +119,8 @@ The API exposes a single canonical model independent of upstream formats:
 5. **Backend FX cache** — in-memory TTL cache for EUR/GBP rates to avoid hitting Frankfurter on every dashboard request.
 6. **Frontend cache** — TanStack Query handles browser-side cache and 30s auto-refresh.
 7. **Structured provider logs** — every upstream call logs provider alias, attempt, latency, and outcome as JSON.
-8. **OOP + Repository** — domain models and repository interfaces for future persistence.
+8. **Pluggable persistence** — `PERSISTENCE_MODE=memory|mongodb` with repository interfaces; MongoDB via Docker Compose.
+9. **OOP + Repository** — domain models and repository interfaces for future persistence.
 
 ## Upstream providers
 
@@ -147,7 +164,7 @@ pnpm lint      # run linters (placeholders currently)
 ## Limitations / what is not done
 
 - ESLint and Vitest are not fully configured; scripts are placeholders.
-- No persistent database in this demo; repository interfaces are ready for MongoDB/in-memory swap.
+- MongoDB persistence is optional; default mode remains in-memory for zero-config demos.
 - Circuit breaker is implemented for INESTABLE but could be generalized to all providers.
 - Authentication is not required by the assessment.
 - The panel is intentionally simple; no pixel-perfect design system.

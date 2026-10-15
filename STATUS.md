@@ -17,7 +17,7 @@ Honest status of each requirement from the Credicorp Bank assessment.
 | Circuit breaker | Hecho | `CircuitBreaker` state machine aplicado al proveedor INESTABLE; tests incluidos. |
 | Boceto innovación | Hecho | Diagrama ASCII de arquitectura agregado a README. |
 | Auto-refresh panel | Hecho | TanStack Query `refetchInterval: 30000`. |
-| Patrón repositorio | Hecho | `ICustomerRepository` + implementación en memoria con índice único sobre email. |
+| Patrón repositorio | Hecho | `ICustomerRepository` e `ITransactionRepository`; implementaciones en memoria y MongoDB vía Docker Compose. |
 | Test de mapeo canónico | Hecho | `mapCustomer` y `mapTransactions` tienen tests unitarios. |
 
 ## Resumen

@@ -3,6 +3,7 @@ import Fastify from "fastify";
 import helmet from "@fastify/helmet";
 import cors from "@fastify/cors";
 import { env } from "./config/env.js";
+import { closeRepositories } from "./repositories/repository.factory.js";
 import { dashboardRoutes } from "./routes/dashboard.route.js";
 
 const app = Fastify({
@@ -24,3 +25,13 @@ const HOST = env.api.host;
 await app.listen({ port: PORT, host: HOST });
 
 console.log(`🚀 PayLinkHub API running at http://${HOST}:${PORT}`);
+
+async function shutdown(signal: string) {
+  console.log(`Received ${signal}. Closing server and repositories...`);
+  await app.close();
+  await closeRepositories();
+  process.exit(0);
+}
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));

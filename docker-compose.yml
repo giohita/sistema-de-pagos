@@ -1,0 +1,13 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: paylinkhub-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: paylinkhub
+    volumes:
+      - paylinkhub-mongo-data:/data/db
+
+volumes:
+  paylinkhub-mongo-data:

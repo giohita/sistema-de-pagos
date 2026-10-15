@@ -1,8 +1,13 @@
 import type { Dashboard, Summary, Transaction } from "@paylinkhub/types";
+import type { ICustomerRepository, ITransactionRepository } from "../repositories/index.js";
 import { ProviderOrchestrator } from "./provider-orchestrator.js";
 
 export class DashboardService {
-  constructor(private orchestrator: ProviderOrchestrator) {}
+  constructor(
+    private orchestrator: ProviderOrchestrator,
+    private customerRepo: ICustomerRepository,
+    private transactionRepo: ITransactionRepository,
+  ) {}
 
   async buildDashboard(customerId: number): Promise<Dashboard> {
     const result = await this.orchestrator.run(customerId);
@@ -21,7 +26,6 @@ export class DashboardService {
       totalUsd: convertedTransactions.reduce((sum, tx) => sum + tx.totalUsd, 0),
     };
 
-    // Fallback mock customer for graceful degradation when CORE fails
     const customer =
       result.customer || {
         id: customerId,
@@ -30,6 +34,13 @@ export class DashboardService {
         phone: "-",
         address: { street: "-", city: "-", country: "-" },
       };
+
+    if (result.customer) {
+      await this.customerRepo.save(result.customer).catch(() => undefined);
+    }
+    if (convertedTransactions.length > 0) {
+      await this.transactionRepo.save(customerId, convertedTransactions).catch(() => undefined);
+    }
 
     return {
       customer,
